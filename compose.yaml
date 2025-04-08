@@ -1,0 +1,37 @@
+services:
+  database:
+    image: postgres:15-alpine
+    restart: always
+    container_name: database
+    networks:
+      - red
+    environment:
+      - POSTGRES_DB=dbcart
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_USER=dbcart
+    volumes:
+      - data:/var/lib/
+
+  backend:
+    build:
+      dockerfile: ./Dockerfile
+    restart: always
+    container_name: backend
+    depends_on:
+      - database
+    networks:
+      - red
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/otc_core
+      - SPRING_DATASOURCE_USERNAME=otc_core
+      - SPRING_DATASOURCE_PASSWORD=E6onFZsd0cYMOI7yz4c1C2p92U5hp1ul
+      - SPRING.JPA.PROPERTIES.HIBERNATE.DIALECT=org.hibernate.dialect.PostgreSQLDialect
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    ports:
+      - 9000:8080
+
+networks:
+  red:
+
+volumes:
+  data:
