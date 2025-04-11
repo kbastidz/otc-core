@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.rec.mso.core.entity.models.Users;
+import org.rec.mso.core.entity.models.Usuario;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public class JwtService {
     @Value("${spring.jwt.expired}")
     private long EXPIRATION_IN_SECONDS_MILLIS;
 
-    public String generateToken(Users user, Map<String, Object> claims) {
+    public String generateToken(Usuario user, Map<String, Object> claims) {
         Date issued = new Date(System.currentTimeMillis());
         Date expiration = new Date(issued.getTime() + (EXPIRATION_IN_SECONDS_MILLIS * 60 * 1000));
         return Jwts.builder()
@@ -40,7 +41,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(key);
     }
 
-    public Map<String, Object> generateExtraClaims(Users user) {
+    public Map<String, Object> generateExtraClaims(Usuario user) {
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("name", user.getUsername());
         extraClaims.put("Role", user.getRole().name());

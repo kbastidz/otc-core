@@ -2,8 +2,9 @@ package org.rec.mso.core.service;
 
 import org.rec.mso.core.entity.dto.AuthenticationRequest;
 import org.rec.mso.core.entity.dto.AuthenticationResponse;
+import org.rec.mso.core.utils.RsTrxService;
 
 public interface AuthenticationService {
-    AuthenticationResponse login(AuthenticationRequest authentication);
+    RsTrxService login(AuthenticationRequest authentication);
     AuthenticationResponse sign(AuthenticationRequest authentication);
 }

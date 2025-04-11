@@ -30,7 +30,8 @@ public class HttpSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .cors(AbstractHttpConfigurer::disable)
+                //.cors(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(getAuthorizationManagerRequestMatcherRegistryCustomizer());
         return http.build();
 
@@ -38,16 +39,32 @@ public class HttpSecurityConfig {
 
     private static Customizer<AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry> getAuthorizationManagerRequestMatcherRegistryCustomizer() {
         return (api) -> {
+            // Permitir acceso público a las rutas de Swagger
+            api.requestMatchers(
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html"
+            ).permitAll();
+
             // public
             api.requestMatchers(HttpMethod.GET, "/product/list").permitAll();
             api.requestMatchers(HttpMethod.GET, "/product/{id}").permitAll();
-            api.requestMatchers(HttpMethod.POST, "/authentication/login").permitAll();
-            api.requestMatchers(HttpMethod.POST, "/authentication/sign").permitAll();
+            api.requestMatchers(HttpMethod.POST, "/api/v1/OTC/authentication/login").permitAll();
+            api.requestMatchers(HttpMethod.POST, "/api/v1/OTC/authentication/sign").permitAll();
+
+            api.requestMatchers(HttpMethod.GET, "/api/v1/personuser/consultPerson").permitAll();
+            api.requestMatchers(HttpMethod.GET, "/api/v1/personuser/consultPersonId/{id}").permitAll();
+            api.requestMatchers(HttpMethod.POST, "/api/v1/personuser/registerUser").permitAll();
+            api.requestMatchers(HttpMethod.PUT, "/api/v1/personuser/updateUser").permitAll();
             api.requestMatchers("/error").permitAll();
             // Private
             api.requestMatchers(HttpMethod.POST, "/product/add/").hasAnyAuthority(Permission.SAVE_ONE_PRODUCT.name());
             api.requestMatchers(HttpMethod.PUT, "/product/update/{id}/").hasAnyAuthority(Permission.SAVE_ONE_PRODUCT.name());
             api.requestMatchers(HttpMethod.DELETE, "/product/{id}/").hasAnyAuthority(Permission.SAVE_ONE_PRODUCT.name());
+
+            //api.requestMatchers(HttpMethod.POST, "/api/v1/personuser/registerUser").hasAnyAuthority(Permission.SAVE_ONE_PRODUCT.name());
+            //api.requestMatchers(HttpMethod.PUT, "/api/v1/personuser/updateUser").hasAnyAuthority(Permission.SAVE_ONE_PRODUCT.name());
+
             api.anyRequest().authenticated();
         };
     }

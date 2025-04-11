@@ -44,7 +44,7 @@ public class ProductServiceImpl implements ProductService {
     public Product saveProduct(Product body) {
       Optional<Product> productId = repository.findByName(body.getName());
       if(productId.isPresent()){
-          throw new InvalidProductExeptions(Message.PRODUCT_ALREADY_EXISTS,HttpStatus.CONFLICT.value(),HttpStatus.CONFLICT);
+          throw new InvalidProductExeptions(Message.ALREADY_EXISTS,HttpStatus.CONFLICT.value(),HttpStatus.CONFLICT);
       }
         log.info("SAVE");
         return repository.save(body);

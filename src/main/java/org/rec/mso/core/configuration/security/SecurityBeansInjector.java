@@ -1,6 +1,7 @@
 package org.rec.mso.core.configuration.security;
 
 import org.rec.mso.core.repository.IUsersRepository;
+import org.rec.mso.core.repository.IUsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,7 +19,8 @@ import org.springframework.stereotype.Component;
 public class SecurityBeansInjector {
 
     @Autowired
-    private IUsersRepository repositories;
+    //private IUsersRepository repositories;
+    private IUsuarioRepository repositories;
     @Bean
     public AuthenticationManager manager (AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return  authenticationConfiguration.getAuthenticationManager(); // ProviderManager implementation AuthenticationManager
